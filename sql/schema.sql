@@ -1,0 +1,103 @@
+-- 进销存 + CRM 数据库结构（对应流程图）
+-- 执行前请先创建数据库： CREATE DATABASE IF NOT EXISTS mycrm DEFAULT CHARSET utf8mb4;
+
+USE mycrm;
+
+-- 1. 管理员/老板账号（两个账号，最高权限）
+CREATE TABLE IF NOT EXISTS admin_user (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(64) NOT NULL UNIQUE,
+  password_hash VARCHAR(256) NOT NULL,
+  display_name VARCHAR(64) DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 2. 产品/型号（入库时用：价钱、型号、数量、进价）
+CREATE TABLE IF NOT EXISTS product (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  category VARCHAR(64) DEFAULT NULL COMMENT '品类/大类（如 洗衣机、烘干机）',
+  model VARCHAR(128) NOT NULL COMMENT '型号',
+  price DECIMAL(12,2) NOT NULL DEFAULT 0 COMMENT '售价',
+  cost_price DECIMAL(12,2) NOT NULL DEFAULT 0 COMMENT '进价',
+  quantity INT NOT NULL DEFAULT 0 COMMENT '当前库存数量',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_model (model)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 3. 入库记录
+CREATE TABLE IF NOT EXISTS stock_in (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL,
+  cost_price DECIMAL(12,2) NOT NULL,
+  note VARCHAR(255) DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (product_id) REFERENCES product(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 4. 客户（CRM：客户名、电话、地址）
+CREATE TABLE IF NOT EXISTS customer (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(128) NOT NULL,
+  phone VARCHAR(32) DEFAULT NULL,
+  address VARCHAR(255) DEFAULT NULL,
+  note VARCHAR(255) DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 5. 出库/销售单（卖出 → 出库，关联客户）
+CREATE TABLE IF NOT EXISTS sale_order (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_no VARCHAR(32) NOT NULL UNIQUE,
+  customer_id INT NOT NULL,
+  total_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
+  status VARCHAR(20) DEFAULT 'completed' COMMENT 'completed/cancelled',
+  note VARCHAR(255) DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (customer_id) REFERENCES customer(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 6. 出库明细（每笔卖出哪些产品、数量、单价）
+CREATE TABLE IF NOT EXISTS sale_order_item (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL,
+  unit_price DECIMAL(12,2) NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES sale_order(id),
+  FOREIGN KEY (product_id) REFERENCES product(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 7. 发票（出库产出）
+CREATE TABLE IF NOT EXISTS invoice (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  invoice_no VARCHAR(32) NOT NULL UNIQUE,
+  order_id INT NOT NULL,
+  amount DECIMAL(12,2) NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (order_id) REFERENCES sale_order(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 8. 送货单（出库产出）
+CREATE TABLE IF NOT EXISTS delivery_note (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  note_no VARCHAR(32) NOT NULL UNIQUE,
+  order_id INT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (order_id) REFERENCES sale_order(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 9. 维修记录（CRM 可能需要）
+CREATE TABLE IF NOT EXISTS maintenance (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  customer_id INT NOT NULL,
+  product_id INT NULL COMMENT '可选，关联产品',
+  content TEXT DEFAULT NULL,
+  result VARCHAR(255) DEFAULT NULL,
+  maintained_at DATETIME DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (customer_id) REFERENCES customer(id),
+  FOREIGN KEY (product_id) REFERENCES product(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

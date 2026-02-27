@@ -1,0 +1,52 @@
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: #f2f4f6; color: #1a1a1a; }
+a { color: #2563eb; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.header {
+  background: #1e293b;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand { font-weight: 700; font-size: 1.1rem; }
+.nav { display: flex; align-items: center; gap: 1.25rem; }
+.nav a, .nav .user { color: #e2e8f0; }
+.nav a:hover { color: #fff; }
+.nav .user { margin-right: 0.5rem; color: #94a3b8; font-size: 0.9rem; }
+
+.main { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
+
+.flash { padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+.flash-success { background: #dcfce7; color: #166534; }
+.flash-error { background: #fee2e2; color: #991b1b; }
+
+/* 登录页 */
+.login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1e293b 0%, #334155 100%); }
+.login-box { background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); width: 100%; max-width: 360px; }
+.login-box h1 { margin: 0 0 0.25rem; font-size: 1.5rem; }
+.login-desc { color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem; }
+.login-form label { display: block; margin-top: 1rem; margin-bottom: 0.25rem; font-weight: 500; }
+.login-form input { width: 100%; padding: 0.6rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 1rem; }
+.login-form button { width: 100%; margin-top: 1.25rem; padding: 0.75rem; background: #2563eb; color: #fff; border: none; border-radius: 6px; font-size: 1rem; cursor: pointer; }
+.login-form button:hover { background: #1d4ed8; }
+
+/* 仪表盘卡片 */
+.dashboard-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.card { background: #fff; padding: 1.25rem; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); display: block; border: 1px solid #e2e8f0; transition: box-shadow 0.2s; }
+.card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.12); text-decoration: none; color: inherit; }
+.card-title { display: block; font-weight: 600; margin-bottom: 0.35rem; }
+.card-desc { font-size: 0.85rem; color: #64748b; }
+
+/* 表格与表单通用 */
+h1 { margin-top: 0; }
+table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+th { background: #f8fafc; font-weight: 600; }
+.form-inline { background: #fff; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; }
+.form-inline label { margin-right: 0.25rem; }
+.form-inline input, .form-inline select { padding: 0.5rem 0.6rem; border: 1px solid #cbd5e1; border-radius: 6px; }
+.form-inline button, .btn { padding: 0.5rem 1rem; background: #2563eb; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem; }
+.form-inline button:hover, .btn:hover { background: #1d4ed8; }

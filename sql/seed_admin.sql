@@ -1,0 +1,5 @@
+-- 两个老板账号由程序在首次访问时自动创建，无需本文件。
+-- 默认账号：boss1 / boss2，密码：123456
+-- 若你已手动建表且希望自己插入账号，可用 Python 生成密码哈希后插入：
+--   from werkzeug.security import generate_password_hash
+--   print(generate_password_hash('你的密码', method='pbkdf2:sha256'))
